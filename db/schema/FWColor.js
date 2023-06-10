@@ -7,7 +7,10 @@
 const mongoose = require('mongoose')
 
 module.exports.Schema = new mongoose.Schema({
-    ColorName: String,
+    ColorName: {
+        type: String,
+        unique: true
+    },
     Subreddits: [
         {
             subredditType: String,

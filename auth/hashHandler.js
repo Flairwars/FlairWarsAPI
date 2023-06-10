@@ -2,7 +2,7 @@
  * This file will handle hashing passwords and comparing passwords/keys to hashes
  */
 
-const bcrypt = require('bcrpyt')
+const bcrypt = require('bcrypt')
 
 module.exports.hash = (hashThis, cb) => {
     bcrypt.hash(hashThis, 13, (err, hash) => {

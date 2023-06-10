@@ -27,6 +27,18 @@ module.exports.dbStatusHandler = (method, dbStatus) => {
             
         
         case 'GET':
+            if (dbStatus === 'DBERR') return {
+                status: 500,
+                message: 'Server Error: Database Error'
+            }
+            else if (dbStatus === 'NOTFOUND') return {
+                status: 404,
+                message: 'Not Found: Resource not found'
+            }
+            else return {
+                status: 200,
+                message: dbStatus
+            }
         case 'PUT':
             if (dbStatus === 'DBERR') return {
                 status: 500,

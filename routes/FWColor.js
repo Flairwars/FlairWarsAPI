@@ -15,7 +15,6 @@ router.post('/', (req, res) => {
     const RequiredPermissions = []
     const RouteOperation = () => {
         let CreateColorFields = ['ColorName', 'MainSub', 'FlagImgUrl', 'ServerInviteUrl', 'DefaultColorRole']
-        console.log(req.body)
         if (validate.BodyEvery(req.body, CreateColorFields)) {
             ColorOps.CreateFWColor(
                 req.body.ColorName,

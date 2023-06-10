@@ -19,14 +19,16 @@
   "homepage": "https://github.com/Flairwars/FlairWarsAPI#readme",
   "dependencies": {
     "bcrpyt": "^2.0.0",
-    "chance": "^1.1.7",
+    "bcrypt": "^5.1.0",
+    "chance": "^1.1.11",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "mongoose": "^5.11.9",
-    "snoowrap": "^1.22.0",
-    "swagger-ui-express": "^4.1.6",
+    "dotenv": "^8.6.0",
+    "express": "^4.18.2",
+    "mongoose": "^5.13.17",
+    "node-gyp": "^9.3.1",
+    "snoowrap": "^1.23.0",
+    "swagger-ui-express": "^4.6.3",
     "yamljs": "^0.3.0"
   }
 }

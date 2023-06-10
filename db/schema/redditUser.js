@@ -8,7 +8,10 @@
 const mongoose = require('mongoose')
 
 module.exports.Schema = new mongoose.Schema({
-    RedditUsername: String,
+    RedditUsername: {
+        type: String,
+        unique: true
+    },
     FlairwarsColor: { type: mongoose.Schema.Types.ObjectId, ref: 'FWColors' },
     CountAliases: [ String ],
     Verified: Boolean

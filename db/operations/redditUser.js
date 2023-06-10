@@ -31,7 +31,7 @@ module.exports.CreateRedditUser = (redditUsername, fwColorName, cb) => {
                 RedditUsername: redditUsername,
                 FlairwarsColor: dbRes._id,
                 CountAliases: [],
-                Verified: false
+                Verified: true // TODO: replace
             })
 
             newRedditUser.save()

@@ -19,6 +19,7 @@ module.exports.PermissionTypes = {
     CanUpdateUsers: 'CanUpdateUsers',
     CanDeleteUsers: 'CanDeleteUsers',
     CanManageAppPerms: 'CanManageAppPerms',
+    CanManagePasswords: 'CanManagePasswords', // NOTE: do NOT give this to anything you don't 100% trust! it allows setting passwords with zero checks beyond app perms
     All: 'All'
 }
 
@@ -44,7 +45,8 @@ module.exports.ReadByName = async (AppName) => {
 
 // Append Permissions to an application's Permissions array
 module.exports.AddPermissions = (AppName, NewPermissions) => {
-    Application.Model.findOne({AppName: AppName}).exec( (err, res) => {
+    Application.Model.findOne({AppName: AppName}) .exec( (err, res) => {
+        console.log(err)
         if (err) console.error(err);
         else {
             if (Array.isArray(NewPermissions)) {

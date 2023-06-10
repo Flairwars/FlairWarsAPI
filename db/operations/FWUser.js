@@ -7,11 +7,12 @@ const FWUser = require('../schema/FWUser')
 
 // Additional Imports
 const RedditUserOps = require('./redditUser')
+const { hash } = require('../../auth/hashHandler')
 
 // CREATE OPERATIONS
 
 /**
- * Create a FWUser in the database
+ * Create an FWUser in the database
  * @param {String} redditUsername 
  * @param {String} discordId 
  * @param {Function} cb
@@ -67,10 +68,24 @@ module.exports.GetAllFWUsers = (cb) => {
     })
 }
 
+/**
+ * Get a user by their Discord ID or return 'NOTFOUND'
+ * @param {String} DiscordID
+ * @param {Function} cb 
+ */
 
-
-module.exports.GetOneFWUser = (cb) => {
-
+module.exports.GetOneFWUser = (DiscordID, cb) => {
+    FWUser.Model.findOne({DiscordID: DiscordID}).populate('RedditInfo').exec((err, res) => {
+        if(err){
+            console.error(err)
+            cb('DBERR')
+        }
+        else if(res){
+            cb(res)
+        } else {
+            cb('NOTFOUND')
+        }
+    })
 }
 
 
@@ -82,12 +97,26 @@ module.exports.UpdateFields = () => {
     // WPNickname
 }
 
-
-
-module.exports.UpdateWPPassword = () => {
-
+module.exports.SetWPPassword = (DiscordID, NewPassword, cb) => {
+    hash(NewPassword, (hash) => {
+        if(hash == 'HASHERR'){
+            cb('HASHERR')
+        } else {
+            FWUser.Model.findOne({DiscordID: DiscordID}).exec((err, res) => {
+                if(err){
+                    console.error(err)
+                    cb('DBERR')
+                } else if(res){
+                    res.WPPassword = hash
+                    res.save()
+                    cb(res)
+                } else {
+                    cb('NOTFOUND')
+                }
+            })
+        }
+    })
 }
-
 
 
 module.exports.AddPermission = () => {

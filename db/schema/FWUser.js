@@ -11,7 +11,10 @@ const mongoose = require('mongoose')
 
 module.exports.Schema = new mongoose.Schema({
     RedditInfo: { type: mongoose.Schema.Types.ObjectId, ref: 'RedditUsers' },
-    DiscordID: String,
+    DiscordID: {
+        type: String,
+        unique: true
+    },
     WPNickname: String,
     WPPassword: String,
     Permissions: [],
