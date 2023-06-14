@@ -21,4 +21,4 @@ jobs:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           NODE_ENV: production
           PORT: 5000
-        run: pm2 startOrRestart index.js --name fwapi
+        run: pm2 start fwapi
