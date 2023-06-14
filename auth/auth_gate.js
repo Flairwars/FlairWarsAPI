@@ -24,6 +24,7 @@ module.exports.AuthCheck = (RequestHeaders) => {
         let AuthHeader = RequestHeaders.authorization
         let AuthType = AuthHeader.split(' ')[0]
         let Secret = AuthHeader.split(' ')[1]
+        let Credentials = Buffer.from(Secret, 'base64').toString('ascii')
         if (AuthType === 'Basic') {
             return Secret
         }

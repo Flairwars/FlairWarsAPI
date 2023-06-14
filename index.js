@@ -7,13 +7,15 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 
 const CronJob = require('cron').CronJob
 
+// Use a .env file if one exists (helps for dev environment)
+require('dotenv').config()
+
 // Created dependencies
-const UserRoute = require('./routes/user')
 const ApiAuth = require('./routes/api_auth')
-const CurrencyRoute = require('./routes/currency')
-const TransactionRoute = require('./routes/transaction')
-const CurrencyOps = require('./db/operations/currency')
-const TransactionOps = require('./db/operations/transaction')
+const FWColorRoute = require('./routes/FWColor')
+const RedditUserRoute = require('./routes/redditUser')
+const FWUserRoute = require('./routes/FWUser')
+
 const Auth = require('./auth/auth_gate')
 
 // Initialize an Express app
@@ -52,25 +54,10 @@ let ApplicationAccessLogger = (req, res, next) => {
 app.use(ApplicationAccessLogger)
 
 // User Express Routers
-app.use('/users', UserRoute)
 app.use('/applications', ApiAuth)
-app.use('/currencies', CurrencyRoute)
-app.use('/transactions', TransactionRoute)
-
-// This is a weekly job that recalculates the price of currencies for use with exchange rate
-var PriceJob = new CronJob('0 0 0 * * 1', () => {
-    CurrencyOps.ReadCurrencies().then( allCurrencies => {
-        allCurrencies.forEach( currency => {
-            TransactionOps.EvaluateCurrencyPrice(currency._id, CurrencyPrice => {
-                currency.CurrencyPrice = CurrencyPrice
-                currency.save()
-            })
-        })
-    })
-}, null, true, 'America/Denver')
-
-PriceJob.start();
-console.log(`Next CRON run: ${PriceJob.nextDate()}`)
+app.use('/colors', FWColorRoute)
+app.use('/redditUsers', RedditUserRoute)
+app.use('/fwUsers', FWUserRoute)
 
 // Swagger Renderer
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
@@ -79,6 +66,7 @@ app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.listen((process.env.PORT || 5000), () => {
     console.log(`The app has started.`)
 })
+
 
 // This initializes the MongoDB connection
 const MongoDBConnector = require('./db/mongo_connect');

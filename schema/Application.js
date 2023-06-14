@@ -9,7 +9,12 @@ const mongoose = require('mongoose')
 
 module.exports.Schema = new mongoose.Schema({
     AppName: String,
-    Permissions: []
+    Permissions: [],
+    Secret: String
 })
 
 module.exports.Model = mongoose.model("Apps", exports.Schema)
+
+module.exports.MapOutput = () => {
+    
+}
