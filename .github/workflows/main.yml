@@ -1,0 +1,24 @@
+name: Deploy to production
+
+on:
+  push:
+    branches: [ master ]
+
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: update dependencies
+        run: npm i
+      -
+        name: Start server
+        env: 
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          NODE_ENV: production
+          PORT: 5000
+        run: pm2 startOrRestart index.js --name fwapi
