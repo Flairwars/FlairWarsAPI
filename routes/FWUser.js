@@ -129,7 +129,7 @@ router.post('/:FWUser/credentials', (req, res) => {
 
 // Update password
 
-router.post('/:FWUser/credentials', (req, res) => {
+router.put('/:FWUser/credentials', (req, res) => {
     let RouteOperation = () => {
         
     }
