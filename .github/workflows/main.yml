@@ -1,4 +1,4 @@
-name: Compiling main Docker image 
+name: Deploy to production
 
 on:
   push:
@@ -6,31 +6,19 @@ on:
 
 
 jobs:
-  build:
-    # build and push to docker
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v1
-    -
-      name: Dockerhub login
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      run: |
-        echo "${DOCKER_PASSWORD}" | docker login --username ${DOCKER_USERNAME} --password-stdin
-    -
-      name: Set up Docker Buildx
-      id: buildx
-      uses: crazy-max/ghaction-docker-buildx@v1
-      with:
-        version: latest
-    -
-      name: Build dockerfile (with push)
-      run: |
-                docker buildx build \
-                --platform=linux/arm/v7,linux/arm64 \
-                --output "type=image,push=true" \
-                --file ./Dockerfile . \
-                --tag blots/flairwars-api:main
+      - 
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: update dependencies
+        run: npm i
+      -
+        name: Start server
+        env: 
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          NODE_ENV: production
+          PORT: 5000
+        run: pm2 startOrRestart index.js --name fwapi
