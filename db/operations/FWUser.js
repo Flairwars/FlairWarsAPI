@@ -54,17 +54,17 @@ module.exports.ValidateUser = () => {
  */
 
 module.exports.GetAllFWUsers = (cb) => {
-    FWUser.Model.find({}).populate('RedditInfo').exec((err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWUser.Model.find({}).populate('RedditInfo').exec()
+    .then(res => {
+        if(res){
             cb(res)
-        }
-        else {
+        } else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -75,16 +75,17 @@ module.exports.GetAllFWUsers = (cb) => {
  */
 
 module.exports.GetOneFWUser = (DiscordID, cb) => {
-    FWUser.Model.findOne({DiscordID: DiscordID}).populate('RedditInfo').exec((err, res) => {
-        if(err){
-            console.error(err)
-            cb('DBERR')
-        }
-        else if(res){
+    FWUser.Model.findOne({DiscordID: DiscordID}).populate('RedditInfo').exec()
+    .then(res => {
+        if(res){
             cb(res)
         } else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -102,17 +103,19 @@ module.exports.SetWPPassword = (DiscordID, NewPassword, cb) => {
         if(hash == 'HASHERR'){
             cb('HASHERR')
         } else {
-            FWUser.Model.findOne({DiscordID: DiscordID}).exec((err, res) => {
-                if(err){
-                    console.error(err)
-                    cb('DBERR')
-                } else if(res){
+            FWUser.Model.findOne({DiscordID: DiscordID}).exec()
+            .then(res => {
+                if(res){
                     res.WPPassword = hash
                     res.save()
                     cb(res)
                 } else {
                     cb('NOTFOUND')
                 }
+            })
+            .catch(err => {
+                console.error(err)
+                cb('DBERR')
             })
         }
     })
@@ -137,14 +140,11 @@ module.exports.AddGovRole = () => {
  */
 
 module.exports.DeleteAllFWUsers = (cb) => {
-    FWUser.Model.deleteMany({}, {}, (err) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else {
-            cb('NOCONTENT')
-        }
+    FWUser.Model.deleteMany({}, {},)
+    .then(cb('NOCONTENT'))
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 

@@ -14,17 +14,17 @@ const FWColor = require('../schema/FWColor')
  */
 
 module.exports.GetColorByColorName = (ColorName, cb) => {
-    FWColor.Model.findOne({ColorName: ColorName}, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne({ColorName: ColorName})
+    .then(res => {
+        if(res){
             cb(res)
-        }
-        else {
+        } else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -91,12 +91,9 @@ module.exports.CreateFWColor = (ColorName, MainSub, FlagImgUrl, serverInviteUrl,
  */
 
 module.exports.CreateColorSubreddit = (colorName, subType, subUrl, cb) => {
-    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] })
+    .then(res => {
+        if (res) {
             res.Subreddits.push({
                 subredditType: subType,
                 subredditName: subUrl
@@ -110,6 +107,10 @@ module.exports.CreateColorSubreddit = (colorName, subType, subUrl, cb) => {
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 /**
@@ -121,12 +122,9 @@ module.exports.CreateColorSubreddit = (colorName, subType, subUrl, cb) => {
  */
 
 module.exports.CreateColorFlag = (colorName, flagType, flagUrl, cb) => {
-    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] })
+    .then(res => {
+        if (res) {
             res.Flags.push({
                 flagType: flagType,
                 flagUrl: flagUrl
@@ -140,6 +138,10 @@ module.exports.CreateColorFlag = (colorName, flagType, flagUrl, cb) => {
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 /**
@@ -151,12 +153,9 @@ module.exports.CreateColorFlag = (colorName, flagType, flagUrl, cb) => {
  */
 
 module.exports.CreateColorServer = (colorName, serverType, serverUrl, cb) => {
-    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] })
+    .then(res => {
+        if (res) {
             res.Servers.push({
                 serverType: serverType,
                 serverInviteUrl: serverUrl
@@ -170,6 +169,10 @@ module.exports.CreateColorServer = (colorName, serverType, serverUrl, cb) => {
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 /**
@@ -182,12 +185,9 @@ module.exports.CreateColorServer = (colorName, serverType, serverUrl, cb) => {
  */
 
 module.exports.CreateColorRole = (colorName, roleName, roleServer, roleId, cb) => {
-    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] })
+    .then(res => {
+        if (res) {
             res.GovernmentRoles.push({
                 roleTitle: roleName,
                 roleDiscordRoles: [{
@@ -205,6 +205,10 @@ module.exports.CreateColorRole = (colorName, roleName, roleServer, roleId, cb) =
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 /**
@@ -216,12 +220,9 @@ module.exports.CreateColorRole = (colorName, roleName, roleServer, roleId, cb) =
  */
 
 module.exports.CreateColorTracker = (colorName, trackerType, trackerData, cb) => {
-    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [ {ColorName: colorName}, {_id: colorName} ] })
+    .then(res => {
+        if (res) {
             res.VictoryTracker.push({
                 trackerType: trackerType,
                 trackerData: trackerData
@@ -235,6 +236,10 @@ module.exports.CreateColorTracker = (colorName, trackerType, trackerData, cb) =>
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 // READ OPERATIONS
@@ -245,14 +250,11 @@ module.exports.CreateColorTracker = (colorName, trackerType, trackerData, cb) =>
  */
 
 module.exports.GetAllFWColors = (cb) => {
-    FWColor.Model.find({}, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else {
-            cb(res)
-        }
+    FWColor.Model.find({})
+    .then(res => cb(res))
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -263,17 +265,18 @@ module.exports.GetAllFWColors = (cb) => {
  */
 
 module.exports.GetFWColorByName = (ColorName, cb) => {
-    FWColor.Model.findOne( { $or: [ {ColorName: ColorName}, {_id: ColorName} ] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [ {ColorName: ColorName}, {_id: ColorName} ] })
+    .then(res => {
+        if (res) {
             cb(res)
         }
         else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -294,28 +297,20 @@ module.exports.UpdateCollectionField = (fieldName, fieldValue, operation, cb) =>
     
     switch(operation) {
         case 'replace':
-            FWColor.Model.updateMany({}, {$set: UpdateField}, {multi: true, upsert: false}, (err, res) => {
-                if (err) {
-                    console.error(err)
-                    cb('DBERR')
-                }
-                else {
-                    console.log(res)
-                    cb(res)
-                }
+            FWColor.Model.updateMany({}, {$set: UpdateField}, {multi: true, upsert: false})
+            .then(res => cb(res))
+            .catch(err => {
+                console.error(err)
+                cb('DBERR')
             })
             break;
         
         case 'append':
-            FWColor.Model.updateMany({}, {$push: UpdateField}, {multi: true, upsert: false}, (err, res) => {
-                if (err) {
-                    console.error(err)
-                    cb(err)
-                }
-                else {
-                    console.log(res)
-                    cb(res)
-                }
+            FWColor.Model.updateMany({}, {$push: UpdateField}, {multi: true, upsert: false})
+            .then(res => cb(res))
+            .catch(err => {
+                console.error(err)
+                cb('DBERR')
             })
             break;
         
@@ -333,12 +328,9 @@ module.exports.UpdateCollectionField = (fieldName, fieldValue, operation, cb) =>
  */
 
 module.exports.UpdateColorName = (ColorName, NewColorName, cb) => {
-    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] })
+    .then(res => {
+        if (res) {
             res.ColorName = NewColorName
             res.save()
 
@@ -347,6 +339,10 @@ module.exports.UpdateColorName = (ColorName, NewColorName, cb) => {
         else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -359,31 +355,32 @@ module.exports.UpdateColorName = (ColorName, NewColorName, cb) => {
  */
 
 module.exports.UpdateSubreddit = (ColorName, SubredditId, updateBody, cb) => {
-    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, (err, res) => {
-        if (err) {
+    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] })
+        .then(res => {
+            if (res) {
+                res.Subreddits.forEach( subreddit => {
+                    if (SubredditId == subreddit._id) {
+                        if (updateBody.hasOwnProperty('type')) {
+                            subreddit.subredditType = updateBody.type
+                        }
+                        if (updateBody.hasOwnProperty('url')) {
+                            subreddit.subredditName = updateBody.url
+                        }
+                    }
+                })
+    
+                res.save()
+    
+                cb(res)
+            }
+            else {
+                cb('NOTFOUND')
+            }
+        })
+        .catch(err => {
             console.error(err)
             cb('DBERR')
-        }
-        else if (res) {
-            res.Subreddits.forEach( subreddit => {
-                if (SubredditId == subreddit._id) {
-                    if (updateBody.hasOwnProperty('type')) {
-                        subreddit.subredditType = updateBody.type
-                    }
-                    if (updateBody.hasOwnProperty('url')) {
-                        subreddit.subredditName = updateBody.url
-                    }
-                }
-            })
-
-            res.save()
-
-            cb(res)
-        }
-        else {
-            cb('NOTFOUND')
-        }
-    })
+        })
 }
 
 /**
@@ -395,12 +392,9 @@ module.exports.UpdateSubreddit = (ColorName, SubredditId, updateBody, cb) => {
  */
 
 module.exports.UpdateFlag = (ColorName, FlagId, updateBody, cb) => {
-    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] })
+    .then(res => {
+        if (res) {
             res.Flags.forEach( flag => {
                 if (FlagId == flag._id) {
                     if (updateBody.hasOwnProperty('type')) {
@@ -420,6 +414,10 @@ module.exports.UpdateFlag = (ColorName, FlagId, updateBody, cb) => {
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 /**
@@ -431,12 +429,9 @@ module.exports.UpdateFlag = (ColorName, FlagId, updateBody, cb) => {
  */
 
 module.exports.UpdateServer = (ColorName, ServerId, updateBody, cb) => {
-    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] })
+    .then(res => {
+        if (res) {
             res.Servers.forEach( server => {
                 if (ServerId == server._id) {
                     if (updateBody.hasOwnProperty('type')) {
@@ -456,15 +451,16 @@ module.exports.UpdateServer = (ColorName, ServerId, updateBody, cb) => {
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 module.exports.UpdateRole =  (ColorName, RoleId, updateBody, cb) => {
-    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] })
+    .then(res => {
+        if (res) {
             res.GovernmentRoles.forEach( role => {
                 if (RoleId == role._id) {
                     if (updateBody.hasOwnProperty('roleTitle')) {
@@ -493,6 +489,10 @@ module.exports.UpdateRole =  (ColorName, RoleId, updateBody, cb) => {
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 /**
@@ -504,12 +504,9 @@ module.exports.UpdateRole =  (ColorName, RoleId, updateBody, cb) => {
  */
 
 module.exports.UpdateTracker = (ColorName, TrackerId, updateBody, cb) => {
-    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    FWColor.Model.findOne( { $or: [{ColorName: ColorName}, {_id: ColorName}] })
+    .then(res => {
+        if (res) {
             res.VictoryTracker.forEach( tracker => {
                 if (TrackerId == tracker._id) {
                     if (updateBody.hasOwnProperty('trackerType')) {
@@ -529,6 +526,10 @@ module.exports.UpdateTracker = (ColorName, TrackerId, updateBody, cb) => {
             cb('NOTFOUND')
         }
     })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
+    })
 }
 
 // DELETE OPERATIONS
@@ -540,14 +541,11 @@ module.exports.UpdateTracker = (ColorName, TrackerId, updateBody, cb) => {
  */
 
 module.exports.DeleteFWColorByName = (ColorName, cb) => {
-    FWColor.Model.findOneAndDelete( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, {}, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else {
-            cb(res)
-        }
+    FWColor.Model.findOneAndDelete( { $or: [{ColorName: ColorName}, {_id: ColorName}] }, {})
+    .then(res => cb(res))
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -557,13 +555,10 @@ module.exports.DeleteFWColorByName = (ColorName, cb) => {
  */
 
 module.exports.DeleteCollection = (cb) => {
-    FWColor.Model.deleteMany({}, {}, (err) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else {
-            cb(true)
-        }
+    FWColor.Model.deleteMany({}, {})
+    .then(res => cb(true))
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }

@@ -25,7 +25,7 @@
     "cron": "^1.8.2",
     "dotenv": "^8.6.0",
     "express": "^4.18.2",
-    "mongoose": "^5.13.17",
+    "mongoose": "^7.3.0",
     "node-gyp": "^9.3.1",
     "snoowrap": "^1.23.0",
     "swagger-ui-express": "^4.6.3",
