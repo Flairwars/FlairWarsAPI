@@ -49,30 +49,22 @@ module.exports.CreateRedditUser = (redditUsername, fwColorName, cb) => {
  */
 
 module.exports.CreateCountAlias = (redditUsername, countColor, cb) => {
-    redditUser.Model.findOne({RedditUsername: redditUsername}, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
-            FWColorOps.GetColorByColorName(countColor, dbRes => {
-                if (dbRes === 'DBERR' || dbRes === 'NOTFOUND') {
-                    cb(dbRes)
-                }
-                else {
-                    res.CountAliases.push(dbRes._id)
-
-                    res.save()
-
-                    cb(res)
-                }
-            })
-        }
-        else {
-            cb('NOTFOUND')
+    redditUser.Model.findOne({RedditUsername: redditUsername})
+    .then(res => FWColorOps.GetColorByColorName(countColor, res))
+    .then(res => {
+        if(res == 'DBERR' || res == 'NOTFOUND'){
+            cb(res)
+        } else {
+            res.CountAliases.push(dbRes._id)
+            res.save()
+            cb(res)
         }
     })
-}
+    .catch(err => {
+        console.log(err)
+        cb('NOTFOUND')
+    })
+ }
 
 // READ OPERATIONS
 
@@ -82,17 +74,17 @@ module.exports.CreateCountAlias = (redditUsername, countColor, cb) => {
  */
 
 module.exports.ReadAllRedditUsers = (cb) => {
-    redditUser.Model.find({}).populate('FlairwarsColor').exec((err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    redditUser.Model.find({}).populate('FlairwarsColor').exec()
+    .then(res => {
+        if(res){
             cb(res)
-        }
-        else {
+        } else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -103,17 +95,17 @@ module.exports.ReadAllRedditUsers = (cb) => {
  */
 
 module.exports.ReadOneRedditUser = (redditUsername, cb) => {
-    redditUser.Model.findOne({RedditUsername: redditUsername}).populate('FlairwarsColor').exec((err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    redditUser.Model.findOne({RedditUsername: redditUsername}).populate('FlairwarsColor').exec()
+    .then(res => {
+        if(res){
             cb(res)
-        }
-        else {
+        } else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -127,21 +119,19 @@ module.exports.ReadOneRedditUser = (redditUsername, cb) => {
  */
 
 module.exports.SetVerification = (redditUsername, verifiedStatus, cb) => {
-    redditUser.Model.findOne({RedditUsername: redditUsername}, (err, res) => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else if (res) {
+    redditUser.Model.findOne({RedditUsername: redditUsername})
+    .then(res => {
+        if(res){
             res.Verified = verifiedStatus
-
             res.save()
-
             cb(res)
-        }
-        else {
+        } else {
             cb('NOTFOUND')
         }
+    })
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -153,14 +143,11 @@ module.exports.SetVerification = (redditUsername, verifiedStatus, cb) => {
  */
 
 module.exports.DeleteAllRedditUsers = (cb) => {
-    redditUser.Model.deleteMany({}, {}, err => {
-        if (err) {
-            console.error(err)
-            cb('DBERR')
-        }
-        else {
-            cb('NOCONTENT')
-        }
+    redditUser.Model.deleteMany({}, {})
+    .then(cb('NOCONTENT'))
+    .catch(err => {
+        console.error(err)
+        cb('DBERR')
     })
 }
 
@@ -172,28 +159,22 @@ module.exports.DeleteAllRedditUsers = (cb) => {
  */
 
 module.exports.DeleteCountAlias = (redditUsername, countColor, cb) => {
-    FWColorOps.GetColorByColorName(countColor, dbRes => {
-        if (dbRes === 'DBERR' || dbRes === 'NOTFOUND') {
+    FWColorOps.GetColorByColorName(countColor)
+    .then(dbRes => {
+        if(dbRes == 'DBERR' || dbRes == 'NOTFOUND'){
             cb(dbRes)
-        }
-        else {
-            redditUser.Model.findOne({RedditUsername: redditUsername}, (err, res) => {
-                if (err) {
-                    console.error(err)
-                    cb('DBERR')
+        } else {
+            redditUser.Model.findOne({RedditUsername: redditUsername})
+            .then(res => {
+                if (res.CountAliases.includes(dbRes._id)) {
+                    res.CountAliases = res.CountAliases.splice(res.CountAliases.indexOf(dbRes._id), 1)
                 }
-                else if (res) {
-                    if (res.CountAliases.includes(dbRes._id)) {
-                        res.CountAliases = res.CountAliases.splice(res.CountAliases.indexOf(dbRes._id), 1)
-                    }
-        
-                    res.save()
-        
-                    cb(res)
-                }
-                else {
-                    cb('NOTFOUND')
-                }
+                res.save()
+                cb(res)
+            })
+            .catch(err => {
+                console.error(err)
+                cb('DBERR')
             })
         }
     })

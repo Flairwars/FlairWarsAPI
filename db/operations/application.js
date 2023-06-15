@@ -45,42 +45,38 @@ module.exports.ReadByName = async (AppName) => {
 
 // Append Permissions to an application's Permissions array
 module.exports.AddPermissions = (AppName, NewPermissions) => {
-    Application.Model.findOne({AppName: AppName}) .exec( (err, res) => {
-        console.log(err)
-        if (err) console.error(err);
-        else {
-            if (Array.isArray(NewPermissions)) {
-                let newPermArray = res.Permissions.concat(NewPermissions)
-                res.Permissions = [ ...new Set(newPermArray) ]
-                res.save()
-            }
-            else {
-                if (!res.Permissions.includes(NewPermissions)) res.Permissions.push(NewPermissions)
-                res.save()
-            }
+    Application.Model.findOne({AppName: AppName}) .exec()
+    .then(res => {
+        if (Array.isArray(NewPermissions)) {
+            let newPermArray = res.Permissions.concat(NewPermissions)
+            res.Permissions = [ ...new Set(newPermArray) ]
+            res.save()
         }
-    })
+        else {
+            if (!res.Permissions.includes(NewPermissions)) res.Permissions.push(NewPermissions)
+            res.save()
+        }
+    }).catch(console.error)
 }
 
 // Remove Permissions from an application's Permissions array
 module.exports.RemovePermissions = (AppName, PermsToRemove) => {
-    Application.Model.findOne({AppName: AppName}).exec( (err, res) => {
-        if (err) console.error(err);
-        else {
-            if (Array.isArray(PermsToRemove)) {
-                PermsToRemove.forEach( permission => {
-                    if (res.Permissions.includes(permission)) {
-                        res.Permissions.splice(res.Permissions.indexOf(permission), 1)
-                    }
-                })
-                res.save()
-            }
-            else {
-                if (res.Permissions.includes(PermsToRemove)) {
-                    res.Permissions.splice(res.Permissions.indexOf(PermsToRemove), 1)
+    Application.Model.findOne({AppName: AppName}).exec()
+    .then(res => {
+        if (Array.isArray(PermsToRemove)) {
+            PermsToRemove.forEach( permission => {
+                if (res.Permissions.includes(permission)) {
+                    res.Permissions.splice(res.Permissions.indexOf(permission), 1)
                 }
-                res.save()
+            })
+            res.save()
+        }
+        else {
+            if (res.Permissions.includes(PermsToRemove)) {
+                res.Permissions.splice(res.Permissions.indexOf(PermsToRemove), 1)
             }
+            res.save()
         }
     })
+    .catch(err => console.error)
 }
